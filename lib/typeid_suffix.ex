@@ -26,8 +26,6 @@ defmodule Typeid.Suffix do
   def valid?(suffix) do
     case Base32.decode(suffix) do
       {:ok, _} ->
-      #{:ok, <<0::size(2), _::bitstring-size(128)>>} ->
-      #{:ok, <<0::size(2), _::bitstring-size(128)>>} ->
         true
       _ ->
         false

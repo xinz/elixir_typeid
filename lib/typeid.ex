@@ -16,7 +16,9 @@ defmodule Typeid do
         }
 
   @spec new(String.t()) :: {:ok, info} | :error
-  def new(type) when type == "" or type == nil do
+  def new(type)
+      when type == ""
+      when type == nil do
     {:ok, %__MODULE__{prefix: type, suffix: Suffix.generate()}}
   end
   def new(type) do
@@ -30,7 +32,9 @@ defmodule Typeid do
   end
 
   @spec to_string(typeid :: info) :: String.t()
-  def to_string(%__MODULE__{prefix: p, suffix: s}) when p == "" or p == nil do
+  def to_string(%__MODULE__{prefix: p, suffix: s})
+      when p == ""
+      when p == nil do
     s
   end
   def to_string(%__MODULE__{prefix: p, suffix: s}) do
@@ -48,7 +52,7 @@ defmodule Typeid do
     prefix = binary_part(string, 0, size-27)
     underscore_suffix = binary_part(string, size - 27, 27)
 
-    with {prefix, suffix} = match(prefix, underscore_suffix),
+    with {prefix, suffix} = check_prefix_underscore_suffix(prefix, underscore_suffix),
          true <- Prefix.valid?(prefix) and Suffix.valid?(suffix) do
       {:ok, %__MODULE__{prefix: prefix, suffix: suffix}}
     else
@@ -65,10 +69,10 @@ defmodule Typeid do
 
   def parse(_), do: :error
 
-  defp match(prefix, <<"_"::binary, suffix::binary>>) do
+  defp check_prefix_underscore_suffix(prefix, <<"_"::binary, suffix::binary>>) do
     {prefix, suffix}
   end
-  defp match(_, _), do: :error
+  defp check_prefix_underscore_suffix(_, _), do: :error
 end
 
 
