@@ -1,3 +1,14 @@
+defmodule Typeid.Macros do
+  defmacro defextension(module, do: body) do
+    module = Macro.expand(module, __ENV__)
+    if Code.ensure_loaded?(module) do
+      quote do
+        unquote(body)
+      end
+    end
+  end
+end
+
 defmodule Typeid do
 
   defmodule Base32 do
@@ -75,8 +86,119 @@ defmodule Typeid do
     {prefix, suffix}
   end
   defp check_prefix_underscore_suffix(_, _), do: :error
-end
 
+  import Typeid.Macros, only: [defextension: 2]
+
+  defextension Ecto.ParameterizedType do
+    use Ecto.ParameterizedType
+
+    @doc false
+    @impl Ecto.ParameterizedType
+    def type(_), do: :string
+
+    @doc false
+    @impl Ecto.ParameterizedType
+    def init(opts) do
+      type = opts[:type]
+      %{type: type}
+    end
+
+    @doc false
+    @impl Ecto.ParameterizedType
+    def cast(nil, _), do: {:ok, nil}
+    def cast(value, %{type: type}) when byte_size(value) > 27 do
+      suffix = String.replace_prefix(value, "#{type}_", "")
+      if Suffix.valid?(suffix) do
+        {:ok, value}
+      else
+        :error
+      end
+    end
+    def cast(value, %{type: type})
+        when type == nil and byte_size(value) == 26
+        when type == "" and byte_size(value) == 26 do
+      if Suffix.valid?(value) do
+        {:ok, value}
+      else
+        :error
+      end
+    end
+    def cast(%__MODULE__{} = typeid, %{type: type}) do
+      if typeid.prefix == type do
+        {:ok, Typeid.to_string(typeid)}
+      else
+        :error
+      end
+    end
+    def cast(v, p) do
+      IO.puts "cast, v: #{inspect v}, p: #{inspect p}"
+      :error
+    end
+
+    @doc false
+    @impl Ecto.ParameterizedType
+    def autogenerate(%{type: type}) do
+      {:ok, typeid} = Typeid.new(type)
+      Typeid.to_string(typeid)
+    end
+
+    @doc false
+    @impl Ecto.ParameterizedType
+    def load(nil, _, _), do: {:ok, nil}
+    def load(value, _loader, %{type: type}) when byte_size(value) > 27 do
+      case Typeid.parse(value) do
+        {:ok, %__MODULE__{prefix: ^type}} ->
+          {:ok, value}
+        _ ->
+          :error
+      end
+    end
+    def load(value, _loader, %{type: type})
+        when type == nil and byte_size(value) == 26
+        when type == "" and byte_size(value) == 26 do
+      if Typeid.Suffix.valid?(value) do
+        {:ok, value}
+      else
+        :error
+      end
+    end
+    def load(_, _, _), do: :error
+
+    @doc false
+    @impl Ecto.ParameterizedType
+    def dump(nil, _, _), do: {:ok, nil}
+    def dump(%__MODULE__{} = typeid, _dumper, %{type: type})
+        when type == ""
+        when type == nil do
+      {:ok, Typeid.to_string(typeid)}
+    end
+    def dump(%__MODULE__{} = typeid, _dumper, %{type: type}) do
+      if typeid.prefix == type do
+        {:ok, Typeid.to_string(typeid)}
+      else
+        :error
+      end
+    end
+    def dump(typeid, _dumper, %{type: type})
+        when is_binary(typeid) and type == nil
+        when is_binary(typeid) and type == "" do
+      if Suffix.valid?(typeid) do
+        {:ok, typeid}
+      else
+        :error
+      end
+    end
+    def dump(typeid, _dumper, %{type: type}) when is_binary(typeid) do
+      if String.starts_with?(typeid, type) do
+        {:ok, typeid}
+      else
+        :error
+      end
+    end
+    def dump(_, _, _), do: :error
+  end
+
+end
 
 defimpl Inspect, for: Typeid do
   import Inspect.Algebra
