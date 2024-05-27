@@ -3,7 +3,8 @@ defmodule Typeid do
   defmodule Base32 do
     @moduledoc false
     use CrockfordBase32,
-      bits_size: 130
+      bits_size: 130,
+      alphabet: '0123456789abcdefghjkmnpqrstvwxyz'
   end
 
   defstruct [:prefix, :suffix]
@@ -52,11 +53,12 @@ defmodule Typeid do
     prefix = binary_part(string, 0, size-27)
     underscore_suffix = binary_part(string, size - 27, 27)
 
-    with {prefix, suffix} = check_prefix_underscore_suffix(prefix, underscore_suffix),
+    with {prefix, suffix} <- check_prefix_underscore_suffix(prefix, underscore_suffix),
          true <- Prefix.valid?(prefix) and Suffix.valid?(suffix) do
       {:ok, %__MODULE__{prefix: prefix, suffix: suffix}}
     else
-      _ -> :error
+      _error ->
+        :error
     end
   end
   def parse(<<_::binary-size(26)>> = string) do

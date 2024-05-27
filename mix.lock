@@ -1,4 +1,5 @@
 %{
-  "crockford_base32": {:hex, :crockford_base32, "0.7.1", "e4370a3df48d03eb959733902592551c285647086d77f5216fe9e377642d3508", [:mix], [], "hexpm", "0e967766fb799c31c62c00afb2030a7deccc14cc15b88745563128335cb6dfac"},
+  "crockford_base32": {:hex, :crockford_base32, "0.7.2", "c19a27b9b13b0c451d9e45624660d27228d6d303ab27eeb98a3c7e5fc3e4454b", [:mix], [], "hexpm", "8e348a565d8f54bfa6be67efa8c689a66cddd764a864ea0f0dbaf0ff645d6d06"},
+  "jason": {:hex, :jason, "1.4.1", "af1504e35f629ddcdd6addb3513c3853991f694921b1b9368b0bd32beb9f1b63", [:mix], [{:decimal, "~> 1.0 or ~> 2.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "fbb01ecdfd565b56261302f7e1fcc27c4fb8f32d56eab74db621fc154604a7a1"},
   "uniq": {:hex, :uniq, "0.6.1", "369660ecbc19051be526df3aa85dc393af5f61f45209bce2fa6d7adb051ae03c", [:mix], [{:ecto, "~> 3.0", [hex: :ecto, repo: "hexpm", optional: true]}], "hexpm", "6426c34d677054b3056947125b22e0daafd10367b85f349e24ac60f44effb916"},
 }
