@@ -1,14 +1,3 @@
-defmodule Typeid.Macros do
-  defmacro defextension(module, do: body) do
-    module = Macro.expand(module, __ENV__)
-    if Code.ensure_loaded?(module) do
-      quote do
-        unquote(body)
-      end
-    end
-  end
-end
-
 defmodule Typeid do
 
   defmodule Base32 do
@@ -130,16 +119,13 @@ defmodule Typeid do
         :error
       end
     end
-    def cast(v, p) do
-      IO.puts "cast, v: #{inspect v}, p: #{inspect p}"
-      :error
-    end
+    def cast(_, _), do: :error
 
     @doc false
     @impl Ecto.ParameterizedType
     def autogenerate(%{type: type}) do
       {:ok, typeid} = Typeid.new(type)
-      Typeid.to_string(typeid)
+      typeid
     end
 
     @doc false
@@ -198,12 +184,16 @@ defmodule Typeid do
     def dump(_, _, _), do: :error
   end
 
-end
-
-defimpl Inspect, for: Typeid do
-  import Inspect.Algebra
-
-  def inspect(typeid, _opts) do
-    concat(["#Typeid<\"", Typeid.to_string(typeid), "\">"])
+  defimpl String.Chars do
+    def to_string(typeid), do: Typeid.to_string(typeid)
   end
+
+  defimpl Inspect do
+    import Inspect.Algebra
+
+    def inspect(typeid, _opts) do
+      concat(["#Typeid<\"", Typeid.to_string(typeid), "\">"])
+    end
+  end
+
 end

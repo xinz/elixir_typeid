@@ -27,7 +27,7 @@ defmodule Typeid.Ecto.Test do
 
     @primary_key false
     schema "person" do
-      field(:pid, Typeid, autogenerate: true, primary_key: true)
+      field(:id, Typeid, autogenerate: true, primary_key: true)
       field(:name, :string)
       field(:age, :integer)
     end
@@ -35,19 +35,16 @@ defmodule Typeid.Ecto.Test do
 
   test "autogenerate primary key" do
     %Person1{id: id} = Ecto.Changeset.cast(%Person1{}, %{name: "Sun"}, [:name]) |> TestRepo.insert!()
-    assert is_binary(id) == true
-    assert {:ok, t} = Typeid.parse(id)
-    assert t.prefix == "person_a" and String.length(t.suffix) == 26
+    assert is_struct(id, Typeid) == true
+    assert id.prefix == "person_a" and String.length(id.suffix) == 26
 
     %Person2{key: key} = Ecto.Changeset.cast(%Person2{}, %{name: "Sun"}, [:name]) |> TestRepo.insert!()
-    assert is_binary(key) == true
-    assert {:ok, t} = Typeid.parse(key)
-    assert t.prefix == "person_b" and String.length(t.suffix) == 26
+    assert is_struct(key, Typeid) == true
+    assert key.prefix == "person_b" and String.length(key.suffix) == 26
 
-    %Person3{pid: pid} = Ecto.Changeset.cast(%Person3{}, %{name: "Sun", age: 22}, [:name, :age]) |> TestRepo.insert!()
-    assert is_binary(pid) == true
-    assert {:ok, t} = Typeid.parse(pid)
-    assert t.prefix == "" and String.length(t.suffix) == 26
+    %Person3{id: id} = Ecto.Changeset.cast(%Person3{}, %{name: "Sun", age: 22}, [:name, :age]) |> TestRepo.insert!()
+    assert is_struct(id, Typeid) == true
+    assert id.prefix == nil and String.length(id.suffix) == 26
   end
 
   test "query by primary key" do
@@ -65,14 +62,15 @@ defmodule Typeid.Ecto.Test do
 
     {:ok, typeid} = Typeid.new(nil)
     typeid_str = Typeid.to_string(typeid)
-    assert %Person3{pid: ^typeid_str} = TestRepo.load(Person3, %{pid: typeid_str})
+    assert String.length(typeid_str) == 26
+    assert %Person3{id: ^typeid_str} = TestRepo.load(Person3, %{id: typeid_str})
     name = "Q"
     age = 22
     Process.put(:test_repo_all_results, {1, [[typeid_str, name, age]]})
-    assert %Person3{pid: ^typeid_str, name: ^name, age: ^age} = TestRepo.get(Person3, typeid_str)
-    assert %Person3{pid: ^typeid_str, name: ^name, age: ^age} = TestRepo.get(Person3, typeid)
-    assert %Person3{pid: ^typeid_str, name: ^name, age: ^age} = TestRepo.get_by(Person3, pid: typeid_str)
-    assert %Person3{pid: ^typeid_str, name: ^name, age: ^age} = TestRepo.get_by(Person3, pid: typeid)
+    assert %Person3{id: ^typeid_str, name: ^name, age: ^age} = TestRepo.get(Person3, typeid_str)
+    assert %Person3{id: ^typeid_str, name: ^name, age: ^age} = TestRepo.get(Person3, typeid)
+    assert %Person3{id: ^typeid_str, name: ^name, age: ^age} = TestRepo.get_by(Person3, id: typeid_str)
+    assert %Person3{id: ^typeid_str, name: ^name, age: ^age} = TestRepo.get_by(Person3, id: typeid)
   end
 
 end
