@@ -25,7 +25,7 @@ defmodule Typeid.MixProject do
       {:crockford_base32, "~> 0.7"},
       {:uniq, "~> 0.6"},
       {:ecto, "~> 3.0", optional: true},
-      {:jason, "~> 1.4", only: [:test]}
+      {:jason, "~> 1.3", optional: true}
     ]
   end
 

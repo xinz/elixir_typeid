@@ -61,4 +61,24 @@ defmodule TypeidTest do
     assert Typeid.parse("usEr_01hynks968e7fvj01pv8190s0y") == :error
     assert Typeid.parse("_00000000000000000000000000") == :error
   end
+
+  test "implement jason encode" do
+    {:ok, typeid} = Typeid.new("user")
+    assert is_struct(typeid, Typeid) == true
+    typeid_str = "#{typeid}"
+    {:ok, content} = Jason.encode(%{"id" => typeid})
+    assert String.contains?(content, typeid_str) == true
+
+    {:ok, t1} = Typeid.new("device")
+    Process.sleep(100)
+    {:ok, t2} = Typeid.new("device")
+    Process.sleep(100)
+    {:ok, t3} = Typeid.new("device")
+    encoded = Jason.encode!(%{"devices" => [t1, t2, t3]})
+    %{"devices" => devices} = Jason.decode!(encoded)
+    input_order = ["#{t1}", "#{t2}", "#{t3}"]
+    assert devices == input_order
+    # Sorts items according to the generated time-ordered in ascending
+    assert Enum.sort(devices) == input_order
+  end
 end

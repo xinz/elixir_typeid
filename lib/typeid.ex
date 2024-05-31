@@ -196,4 +196,11 @@ defmodule Typeid do
     end
   end
 
+  defextension Jason do
+    defimpl Jason.Encoder do
+      def encode(typeid, opts) do
+        Jason.Encode.string(Typeid.to_string(typeid), opts)
+      end
+    end
+  end
 end
