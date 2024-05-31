@@ -5,7 +5,7 @@ An Elixir implementation of [TypeID](https://github.com/jetify-com/typeid).
 TypeIDs are a modern, type-safe, globally unique identifier based on the upcoming
 UUIDv7 standard. They provide a ton of nice properties that make them a great choice
 as the primary identifiers for your data in a database, APIs, and distributed systems.
-Read more about TypeIDs in the [specification](https://github.com/jetpack-io/typeid).
+Read more about TypeIDs in the [specification](https://github.com/jetify-com/typeid/tree/main/spec).
 
 ## Installation
 
@@ -21,7 +21,7 @@ end
 
 - The specification's test cases 100% covered.
 - Implements `Ecto.ParameterizedType` can optionally integrate with Ecto schema.
-- Implements `Jason.Encoder` can optionally inegerate Jason encoding.
+- Implements `Jason.Encoder` can optionally inegerate with `jason` encoding.
 
 ## Usage
 
@@ -71,6 +71,8 @@ or define `Typeid` type in a primary key field of a schema:
 If the `type: "user"` in the above mentioned examples is not set, there will process the prefix of the TypeID as nil.
 
 ### Use with Jason Encoding
+
+We can simply encode `Typeid` struct within Jason.
 
 ```elixir
 iex> typeid
