@@ -1,21 +1,80 @@
-# ElixirTypeid
+# Typeid
 
-**TODO: Add description**
+An Elixir implementation of [TypeID](https://github.com/jetify-com/typeid).
+
+TypeIDs are a modern, type-safe, globally unique identifier based on the upcoming
+UUIDv7 standard. They provide a ton of nice properties that make them a great choice
+as the primary identifiers for your data in a database, APIs, and distributed systems.
+Read more about TypeIDs in the [specification](https://github.com/jetpack-io/typeid).
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `elixir_typeid` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:elixir_typeid, "~> 0.1.0"}
+    {:elixir_typeid, "~> 0.1"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/elixir_typeid>.
+## Intro
 
+- The specification's test cases 100% covered.
+- Implements `Ecto.ParameterizedType` can optionally integrate with Ecto schema.
+- Implements `Jason.Encoder` can optionally inegerate Jason encoding.
+
+## Usage
+
+```elixir
+iex> {:ok, typeid} = Typeid.new("user")
+{:ok, #Typeid<"user_01hz6wxrw2ecmtwaqhnnpr275f">}
+iex> "#{typeid}"
+"user_01hz6wxrw2ecmtwaqhnnpr275f"
+iex> Typeid.uuid(typeid)
+{:ok, #UUIDv7<018fcdce-e382-7329-ae2a-f1ad6d811caf>}
+iex> Typeid.parse("user_01hz6wxrw2ecmtwaqhnnpr275f")
+{:ok, #Typeid<"user_01hz6wxrw2ecmtwaqhnnpr275f">}
+```
+
+### Use with Ecto
+
+In usual we use TypeID to generate the primary key with Ecto schema, define `Typeid` type within `@primary_key`:
+
+```elixir
+
+  defmodule User do
+    use Ecto.Schema
+
+    @primary_key {:id, Typeid, autogenerate: true, type: "user"}
+    schema "user" do
+      field(:name, :string)
+    end
+  end
+
+```
+
+or define `Typeid` type in a primary key field of a schema:
+
+```elixir
+
+  defmodule User do
+    use Ecto.Schema
+
+    @primary_key false
+    schema "user" do
+      field(:user_id, Typeid, autogenerate: true, primary_key: true, type: "user")
+      field(:name, :string)
+    end
+  end
+```
+
+If the `type: "user"` in the above mentioned examples is not set, there will process the prefix of the TypeID as nil.
+
+### Use with Jason Encoding
+
+```elixir
+iex> typeid
+#Typeid<"user_01hz6wxrw2ecmtwaqhnnpr275f">
+iex> Jason.encode(%{id: typeid})
+{:ok, "{\"id\":\"user_01hz6wxrw2ecmtwaqhnnpr275f\"}"}
+```
