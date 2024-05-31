@@ -9,7 +9,8 @@ defmodule Bench.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      elixirc_paths: ["lib"]
     ]
   end
 
@@ -22,8 +23,7 @@ defmodule Bench.MixProject do
   defp deps do
     [
       {:benchee, "~> 1.0", only: :dev, runtime: false},
-      #{:elixir_typeid, path: "../", override: true},
-      {:elixir_typeid, path: "./.."},
+      {:elixir_typeid, path: "../", override: true},
       {:typeid_elixir, "~> 0.6.0", only: :dev},
       {:ecto, "~> 3.10"}
     ]

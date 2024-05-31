@@ -1,4 +1,3 @@
-
 Benchee.run(
   %{
     "typeid_elixir parse from string and validate within only suffix" => fn -> TypeID.from_string("01hyhy1t0yfrcryhwr59pgh8rw") end,
@@ -19,7 +18,6 @@ Benchee.run(
   memory_time: 2
 )
 
-
 Benchee.run(
   %{
     "typeid_elixir parse from string and validate within max prefix" => fn -> TypeID.from_string("userabcdefghijklmnoprtuserabcdefghijklmnoprtuserabcdefghijklmno_01hyhy1t0yfrcryhwr59pgh8rw") end,
@@ -29,4 +27,3 @@ Benchee.run(
   time: 10,
   memory_time: 2
 )
-
