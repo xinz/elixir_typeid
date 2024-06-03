@@ -102,12 +102,18 @@ defmodule Typeid do
   end
 
   @doc """
-  Parse a `t:t/0` from a string.
+  Parse a `t:t/0` from a string, if there is not given the prefix part of the Typeid, the `prefix` of the
+  parsed `t:t/0` is processed as `nil`.
 
   ## Example
   
       iex> Typeid.parse("user_01hzep7s63fd5ted6f7wgqmx3m")
       {:ok, #Typeid<"user_01hzep7s63fd5ted6f7wgqmx3m">}
+      iex> {:ok, typeid} = Typeid.parse("01hzep7s63fd5ted6f7wgqmx3m")
+      {:ok, #Typeid<"01hzep7s63fd5ted6f7wgqmx3m">}
+      iex> typeid.prefix
+      nil
+
   """
   @spec parse(String.t()) :: {:ok, t()} | :error
   def parse(string) when byte_size(string) > 27 do 
@@ -125,7 +131,7 @@ defmodule Typeid do
   end
   def parse(<<_::binary-size(26)>> = string) do
     if Suffix.valid?(string) do
-      {:ok, %__MODULE__{prefix: "", suffix: string}}
+      {:ok, %__MODULE__{prefix: nil, suffix: string}}
     else
       :error
     end

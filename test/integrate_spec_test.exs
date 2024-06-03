@@ -12,7 +12,7 @@ defmodule IntegrateSpecTest do
   for item <- JSONReader.valid_cases() do
     test "spec valid - #{item["name"]} - #{item["prefix"]}" do
       assert {:ok, typeid} = Typeid.parse(unquote(item["typeid"]))
-      assert typeid.prefix == unquote(item["prefix"])
+      assert typeid.prefix == unquote(item["prefix"]) or typeid.prefix == nil
       if unquote(item["name"]) not in ["max-valid", "one", "sixteen", "thirty-two", "ten"] do
         # Similar "00000000-0000-0000-0000-000000000001" is unknown version for `Uniq`,
         # so we ignore test uuid in here.

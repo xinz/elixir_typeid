@@ -45,7 +45,7 @@ defmodule TypeidTest do
     assert {:ok, ^typeid} = Typeid.to_string(typeid) |> Typeid.parse()
 
     {:ok, typeid} = Typeid.parse("01hynkmr3genp92fjr9b74sqx4")
-    assert typeid.prefix == "" and typeid.suffix == "01hynkmr3genp92fjr9b74sqx4"
+    assert typeid.prefix == nil and typeid.suffix == "01hynkmr3genp92fjr9b74sqx4"
     {:ok, typeid} = Typeid.parse("my_id_01hynkmr3genp92fjr9b74sqx4")
     assert typeid.prefix == "my_id" and typeid.suffix == "01hynkmr3genp92fjr9b74sqx4"
   end
