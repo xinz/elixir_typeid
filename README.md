@@ -19,7 +19,7 @@ end
 
 ## Intro
 
-- The specification's test cases 100% covered.
+- The [test cases](https://github.com/jetify-com/typeid/tree/main/spec#validating-implementations) of the formal specification are 100% covered.
 - Implements `Ecto.ParameterizedType` can optionally integrate with Ecto schema.
 - Implements `Jason.Encoder` can optionally inegerate with `jason` encoding.
 
@@ -34,6 +34,8 @@ iex> Typeid.uuid(typeid)
 {:ok, #UUIDv7<018fcdce-e382-7329-ae2a-f1ad6d811caf>}
 iex> Typeid.parse("user_01hz6wxrw2ecmtwaqhnnpr275f")
 {:ok, #Typeid<"user_01hz6wxrw2ecmtwaqhnnpr275f">}
+iex> Typeid.valid?(typeid)
+true
 ```
 
 ### Use with Ecto
@@ -68,7 +70,7 @@ or define `Typeid` type in a primary key field of a schema:
   end
 ```
 
-If the `type: "user"` in the above mentioned examples is not set, there will process the prefix of the TypeID as nil.
+If the `type: "user"` in the above mentioned examples is not set, there will process the prefix of the Typeid as `nil`.
 
 ### Use with Jason Encoding
 

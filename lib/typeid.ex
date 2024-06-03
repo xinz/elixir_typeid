@@ -1,4 +1,9 @@
 defmodule Typeid do
+  @moduledoc """
+  An Elixir implementation of [TypeID](https://github.com/jetify-com/typeid), and a formal
+  [specification](https://github.com/jetify-com/typeid/tree/main/spec) defines the encoding
+  in more detail.
+  """
 
   defmodule Base32 do
     @moduledoc false
@@ -11,12 +16,26 @@ defmodule Typeid do
 
   alias Typeid.{Prefix, Suffix}
 
-  @type info :: %__MODULE__{
+
+  @typedoc """
+  A struct to describe a `TypeID`. 
+  """
+  @type t :: %__MODULE__{
           prefix: String.t(),
           suffix: String.t()
         }
 
-  @spec new(String.t()) :: {:ok, info} | :error
+  @doc """
+  Generate a new `t:t/0` with the given type (as its prefix).
+
+  Refer TypeID's specification, the given type can be a `nil` or an empty string `""`.
+
+  ## Example
+  
+      iex> Typeid.new("user")
+      {:ok, #Typeid<"user_01hzep1kb6ea1abhrg1zx021h8">}
+  """
+  @spec new(String.t()) :: {:ok, t()} | :error
   def new(type)
       when type == ""
       when type == nil do
@@ -32,7 +51,17 @@ defmodule Typeid do
     end
   end
 
-  @spec to_string(typeid :: info) :: String.t()
+  @doc """
+  Transfer a `t:t/0` into a string.
+
+  ## Example
+  
+      iex> {:ok, typeid} = Typeid.new("user")
+      {:ok, #Typeid<"user_01hzep7s63fd5ted6f7wgqmx3m">}
+      iex> Typeid.to_string(typeid)
+      "user_01hzep7s63fd5ted6f7wgqmx3m"
+  """
+  @spec to_string(typeid :: t()) :: String.t()
   def to_string(%__MODULE__{prefix: p, suffix: s})
       when p == ""
       when p == nil do
@@ -42,17 +71,45 @@ defmodule Typeid do
     "#{p}_#{s}"
   end
 
-  @spec uuid(typeid :: info) :: {:ok, Uniq.UUID.info()} | :error
+  @doc """
+  Extract the UUIDv7 from the `t:t/0`, the return UUIDv7 struct depends `Uniq.UUID`.
+
+  ## Example
+
+      iex> {:ok, typeid} = Typeid.new("user")
+      {:ok, #Typeid<"user_01hzep7s63fd5ted6f7wgqmx3m">}
+      iex> Typeid.uuid(typeid)
+      {:ok, #UUIDv7<018fdd63-e4c3-7b4b-a734-cf3f217a7474>}
+  """
+  @spec uuid(typeid :: t()) :: {:ok, Uniq.UUID.info()} | :error
   def uuid(%__MODULE__{suffix: s}) do
     Suffix.uuid(s)
   end
 
-  @spec valid?(typeid :: info) :: boolean()
+  @doc """
+  Validate a `t:t/0`.
+
+  ## Example
+  
+      iex> {:ok, typeid} = Typeid.new("user")
+      {:ok, #Typeid<"user_01hzep7s63fd5ted6f7wgqmx3m">}
+      iex> Typeid.valid?(typeid)
+      true
+  """
+  @spec valid?(typeid :: t()) :: boolean()
   def valid?(%__MODULE__{prefix: prefix, suffix: suffix}) do
     Prefix.valid?(prefix) and Suffix.valid?(suffix)
   end
 
-  @spec parse(String.t()) :: {:ok, info} | :error
+  @doc """
+  Parse a `t:t/0` from a string.
+
+  ## Example
+  
+      iex> Typeid.parse("user_01hzep7s63fd5ted6f7wgqmx3m")
+      {:ok, #Typeid<"user_01hzep7s63fd5ted6f7wgqmx3m">}
+  """
+  @spec parse(String.t()) :: {:ok, t()} | :error
   def parse(string) when byte_size(string) > 27 do 
     size = byte_size(string)
     prefix = binary_part(string, 0, size - 27)
