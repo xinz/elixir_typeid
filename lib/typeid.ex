@@ -47,10 +47,15 @@ defmodule Typeid do
     Suffix.uuid(s)
   end
 
+  @spec valid?(typeid :: info) :: boolean()
+  def valid?(%__MODULE__{prefix: prefix, suffix: suffix}) do
+    Prefix.valid?(prefix) and Suffix.valid?(suffix)
+  end
+
   @spec parse(String.t()) :: {:ok, info} | :error
   def parse(string) when byte_size(string) > 27 do 
     size = byte_size(string)
-    prefix = binary_part(string, 0, size-27)
+    prefix = binary_part(string, 0, size - 27)
     underscore_suffix = binary_part(string, size - 27, 27)
 
     with {prefix, suffix} <- check_prefix_underscore_suffix(prefix, underscore_suffix),

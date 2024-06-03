@@ -62,6 +62,19 @@ defmodule TypeidTest do
     assert Typeid.parse("_00000000000000000000000000") == :error
   end
 
+  test "check valid?" do
+    assert Typeid.valid?(%Typeid{prefix: "user"}) == false
+    assert Typeid.valid?(%Typeid{prefix: "user", suffix: "12345"}) == false
+    assert Typeid.valid?(%Typeid{prefix: "_user", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
+    assert Typeid.valid?(%Typeid{prefix: "user1", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
+    assert Typeid.valid?(%Typeid{prefix: " user", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
+    assert Typeid.valid?(%Typeid{prefix: "user_", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
+    assert Typeid.valid?(%Typeid{prefix: "User", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
+    assert Typeid.valid?(%Typeid{prefix: "usEr", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
+    assert Typeid.valid?(%Typeid{prefix: "my_id", suffix: "01hynkmr3genp92fjr9b74sqx4"}) == true
+    assert Typeid.valid?(%Typeid{prefix: "myid", suffix: "01hynkmr3genp92fjr9b74sqx4"}) == true
+  end
+
   test "implement jason encode" do
     {:ok, typeid} = Typeid.new("user")
     assert is_struct(typeid, Typeid) == true
