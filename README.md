@@ -1,5 +1,7 @@
 # Typeid
 
+[![hex.pm version](https://img.shields.io/hexpm/v/elixir_typeid.svg?v=1)](https://hex.pm/packages/elixir_typeid)
+
 An Elixir implementation of [TypeID](https://github.com/jetify-com/typeid).
 
 TypeIDs are a modern, type-safe, globally unique identifier based on the upcoming
@@ -74,7 +76,7 @@ If the `type: "user"` in the above mentioned examples is not set, there will pro
 
 ### Use with Jason Encoding
 
-We can simply encode `Typeid` struct within Jason.
+We can simply encode `Typeid` struct within `jason`.
 
 ```elixir
 iex> typeid
