@@ -87,7 +87,7 @@ defmodule Typeid do
   end
 
   @doc """
-  Validate a `t:t/0`.
+  Validate a `t:t/0` or a string TypeID format.
 
   ## Example
   
@@ -95,10 +95,23 @@ defmodule Typeid do
       {:ok, #Typeid<"user_01hzep7s63fd5ted6f7wgqmx3m">}
       iex> Typeid.valid?(typeid)
       true
+      iex> Typeid.valid?("user_01hzep7s63fd5ted6f7wgqmx3m")
+      true
+      iex> Typeid.valid?("user_01hzep7s63fd5ted6f7wgqmx3")
+      false
   """
   @spec valid?(typeid :: t()) :: boolean()
+  @spec valid?(typeid :: String.t()) :: boolean()
   def valid?(%__MODULE__{prefix: prefix, suffix: suffix}) do
     Prefix.valid?(prefix) and Suffix.valid?(suffix)
+  end
+  def valid?(typeid) do
+    case parse(typeid) do
+      {:ok, _} ->
+        true
+      _ ->
+        false
+    end
   end
 
   @doc """
@@ -136,7 +149,6 @@ defmodule Typeid do
       :error
     end
   end
-
   def parse(_), do: :error
 
   defp check_prefix_underscore_suffix(prefix, <<"_"::binary, suffix::binary>>) do

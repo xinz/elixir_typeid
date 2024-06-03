@@ -5,6 +5,7 @@ defmodule Typeid.Prefix.Old do
   def valid?(input), do: do_valid?(input)
 
   defp do_valid?(""), do: true
+  defp do_valid?(nil), do: true
   defp do_valid?("_"), do: false
   defp do_valid?(<<"_", _rest::binary>>), do: false
   defp do_valid?(input) when byte_size(input) > 63, do: false

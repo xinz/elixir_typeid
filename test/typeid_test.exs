@@ -62,7 +62,7 @@ defmodule TypeidTest do
     assert Typeid.parse("_00000000000000000000000000") == :error
   end
 
-  test "check valid?" do
+  test "check valid? with %Typeid{}" do
     assert Typeid.valid?(%Typeid{prefix: "user"}) == false
     assert Typeid.valid?(%Typeid{prefix: "user", suffix: "12345"}) == false
     assert Typeid.valid?(%Typeid{prefix: "_user", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
@@ -73,6 +73,22 @@ defmodule TypeidTest do
     assert Typeid.valid?(%Typeid{prefix: "usEr", suffix: "01hynks968e7fvj01pv8190s0y"}) == false
     assert Typeid.valid?(%Typeid{prefix: "my_id", suffix: "01hynkmr3genp92fjr9b74sqx4"}) == true
     assert Typeid.valid?(%Typeid{prefix: "myid", suffix: "01hynkmr3genp92fjr9b74sqx4"}) == true
+    assert Typeid.valid?(%Typeid{prefix: "", suffix: "01hynkmr3genp92fjr9b74sqx4"}) == true
+    assert Typeid.valid?(%Typeid{prefix: nil, suffix: "01hynkmr3genp92fjr9b74sqx4"}) == true
+  end
+
+  test "check valid? with string" do
+    assert Typeid.valid?("user") == false
+    assert Typeid.valid?("user_12345") == false
+    assert Typeid.valid?("_user_01hynks968e7fvj01pv8190s0y") == false
+    assert Typeid.valid?("user1_01hynks968e7fvj01pv8190s0y") == false
+    assert Typeid.valid?(" user_01hynks968e7fvj01pv8190s0y") == false
+    assert Typeid.valid?("user__01hynks968e7fvj01pv8190s0y") == false
+    assert Typeid.valid?("User_01hynks968e7fvj01pv8190s0y") == false
+    assert Typeid.valid?("usEr_01hynks968e7fvj01pv8190s0y") == false
+    assert Typeid.valid?("01hynkmr3genp92fjr9b74sqx4") == true
+    assert Typeid.valid?("my_id_01hynkmr3genp92fjr9b74sqx4") == true
+    assert Typeid.valid?("myid_01hynkmr3genp92fjr9b74sqx4") == true
   end
 
   test "implement jason encode" do

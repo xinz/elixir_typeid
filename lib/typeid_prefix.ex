@@ -3,6 +3,7 @@ defmodule Typeid.Prefix do
 
   @spec valid?(String.t()) :: boolean()
   def valid?(<<>>), do: true
+  def valid?(nil), do: true
   def valid?(?_), do: false
   def valid?(<<?_, _rest::binary>>), do: false
   def valid?(input) when byte_size(input) > 63, do: false
