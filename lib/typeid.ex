@@ -34,6 +34,10 @@ defmodule Typeid do
   
       iex> Typeid.new("user")
       {:ok, #Typeid<"user_01hzep1kb6ea1abhrg1zx021h8">}
+      iex> Typeid.new(nil)
+      {:ok, #Typeid<"01hzevjrxwf4b831t5vshyt571">}
+      iex> Typeid.new("")
+      {:ok, #Typeid<"01hzevjvc5fp0avt85w4z35wnw">}
   """
   @spec new(String.t()) :: {:ok, t()} | :error
   def new(type)
