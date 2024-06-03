@@ -6,6 +6,12 @@ defmodule CaseRegex do
   end
 end
 
+defmodule CasePatternOld do
+  def verify(input) do
+    Typeid.Prefix.Old.valid?(input)
+  end
+end
+
 defmodule CasePattern do
   def verify(input) do
     Typeid.Prefix.valid?(input)
@@ -15,7 +21,8 @@ end
 Benchee.run(
   %{
     "Small case with regex" => fn -> CaseRegex.verify("e1_wme") end,
-    "Small case with pattern match" => fn -> CasePattern.verify("e1_wme") end
+    "Small case with pattern match old" => fn -> CasePatternOld.verify("e1_wme") end,
+    "Small case with pattern match" => fn -> CasePattern.verify("e1_wme") end,
   },
   print: [fast_warning: false],
   time: 10,
@@ -25,7 +32,8 @@ Benchee.run(
 Benchee.run(
   %{
     "Medium case with regex" => fn -> CaseRegex.verify("eewmouwuiwme") end,
-    "Medium case with pattern match" => fn -> CasePattern.verify("eewmouwuiwme") end
+    "Medium case with pattern match old" => fn -> CasePatternOld.verify("eewmouwuiwme") end,
+    "Medium case with pattern match" => fn -> CasePattern.verify("eewmouwuiwme") end,
   },
   print: [fast_warning: false],
   time: 10,
@@ -35,7 +43,8 @@ Benchee.run(
 Benchee.run(
   %{
     "Large case overlength with regex" => fn -> CaseRegex.verify("eewmouwuiwmenwbwmaosxqwisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end,
-    "Large case overlength with pattern match" => fn -> CasePattern.verify("eewmouwuiwmenwbwmaosxqwisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end
+    "Large case overlength with pattern match old" => fn -> CasePatternOld.verify("eewmouwuiwmenwbwmaosxqwisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end,
+    "Large case overlength with pattern match" => fn -> CasePattern.verify("eewmouwuiwmenwbwmaosxqwisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end,
   },
   print: [fast_warning: false],
   time: 10,
@@ -45,7 +54,8 @@ Benchee.run(
 Benchee.run(
   %{
     "Large case contains \"_\" with regex" => fn -> CaseRegex.verify("eewmouwuiwmenwbwmaosxq_wisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end,
-    "Large case contains \"_\" with pattern match" => fn -> CasePattern.verify("eewmouwuiwmenwbwmaosxq_wisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end
+    "Large case contains \"_\" with pattern match old" => fn -> CasePatternOld.verify("eewmouwuiwmenwbwmaosxq_wisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end,
+    "Large case contains \"_\" with pattern match" => fn -> CasePattern.verify("eewmouwuiwmenwbwmaosxq_wisasmoweqjxasmallqeniwswyteqwnczxmsnjdssasasawqwqxasiccxuweqwdsa") end,
   },
   print: [fast_warning: false],
   time: 10,
