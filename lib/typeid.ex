@@ -18,7 +18,7 @@ defmodule Typeid do
 
 
   @typedoc """
-  A struct to describe a `TypeID`. 
+  A struct to describe a `Typeid`.
   """
   @type t :: %__MODULE__{
           prefix: String.t(),
