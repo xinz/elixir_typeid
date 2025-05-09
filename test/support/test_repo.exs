@@ -99,7 +99,7 @@ defmodule Ecto.TestAdapter do
   def insert(_, %{context: nil, prefix: prefix} = meta, fields, on_conflict, returning, _opts) do
     meta = Map.merge(meta, %{fields: fields, on_conflict: on_conflict, returning: returning, prefix: prefix})
     send(self(), {:insert, meta})
-    {:ok, Enum.zip(returning, 1..length(returning))}
+    {:ok, Enum.zip(returning, Range.new(1, length(returning), -1))}
   end
 
   def insert(_, %{context: context}, _fields, _on_conflict, _returning, _opts) do
