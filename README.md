@@ -1,6 +1,7 @@
 # Typeid
 
-[![hex.pm version](https://img.shields.io/hexpm/v/elixir_typeid.svg?v=1)](https://hex.pm/packages/elixir_typeid)
+[![hex.pm version](https://img.shields.io/hexpm/v/elixir_typeid.svg)](https://hex.pm/packages/elixir_typeid)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/elixir_typeid)
 
 An Elixir implementation of [TypeID](https://github.com/jetify-com/typeid).
 
@@ -14,7 +15,7 @@ Read more about TypeIDs in the [specification](https://github.com/jetify-com/typ
 ```elixir
 def deps do
   [
-    {:elixir_typeid, "~> 0.1"}
+    {:elixir_typeid, "~> 0.2"}
   ]
 end
 ```
