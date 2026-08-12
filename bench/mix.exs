@@ -24,7 +24,7 @@ defmodule Bench.MixProject do
     [
       {:benchee, "~> 1.0", only: :dev, runtime: false},
       {:elixir_typeid, path: "../", override: true},
-      {:typeid_elixir, "~> 0.6.0", only: :dev},
+      {:typeid_elixir, "~> 1.0", only: :dev},
       {:ecto, "~> 3.10"}
     ]
   end
