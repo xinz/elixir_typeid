@@ -6,7 +6,7 @@ defmodule Typeid.MixProject do
   def project do
     [
       app: :elixir_typeid,
-      version: "0.3.0",
+      version: "0.3.1",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
