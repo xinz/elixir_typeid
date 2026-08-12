@@ -282,6 +282,14 @@ defmodule Typeid do
     end
   end
 
+  defextension JSON.Encoder do
+    defimpl JSON.Encoder do
+      def encode(typeid, encoder) do
+        JSON.Encoder.encode(Typeid.to_string(typeid), encoder)
+      end
+    end
+  end
+
   defextension Jason do
     defimpl Jason.Encoder do
       def encode(typeid, opts) do

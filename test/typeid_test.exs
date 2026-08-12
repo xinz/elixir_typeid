@@ -10,7 +10,7 @@ defmodule TypeidTest do
 
   test "new typeid with empty string or nil" do
     {:ok, typeid} = Typeid.new("")
-    assert typeid.prefix == "" 
+    assert typeid.prefix == ""
     str = Typeid.to_string(typeid)
     assert String.starts_with?(str, "_") == false
     assert String.length(str) == 26
@@ -99,6 +99,16 @@ defmodule TypeidTest do
     assert Typeid.valid?("01hynkmr3genp92fjr9b74sqx4") == true
     assert Typeid.valid?("my_id_01hynkmr3genp92fjr9b74sqx4") == true
     assert Typeid.valid?("myid_01hynkmr3genp92fjr9b74sqx4") == true
+  end
+
+  if Code.ensure_loaded?(JSON.Encoder) do
+    test "implements the built-in JSON encoder" do
+      typeid = %Typeid{prefix: "user", suffix: "01hynkmr3genp92fjr9b74sqx4"}
+      encoded_typeid = ~s("user_01hynkmr3genp92fjr9b74sqx4")
+
+      assert JSON.encode!(typeid) == encoded_typeid
+      assert JSON.encode!(%{id: typeid}) == ~s({"id":#{encoded_typeid}})
+    end
   end
 
   test "implement jason encode" do

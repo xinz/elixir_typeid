@@ -26,9 +26,10 @@ end
 
 - Covers the [formal TypeID specification test cases](https://github.com/jetify-com/typeid/tree/main/spec#validating-implementations).
 - Implements `Ecto.ParameterizedType` for optional Ecto schema integration.
+- Implements the built-in `JSON.Encoder` protocol when it is available.
 - Implements `Jason.Encoder` for optional Jason encoding.
 
-The Ecto and Jason extensions are generated when their optional dependencies are available while `elixir_typeid` is compiled. If either dependency is added later, recompile this library.
+The Ecto and Jason extensions are generated when their optional dependencies are available while `elixir_typeid` is compiled. If either dependency is added later, recompile this library. The built-in `JSON.Encoder` implementation is generated on Elixir releases that provide the `JSON` module.
 
 ## Usage
 
@@ -79,9 +80,19 @@ or define `Typeid` type in a primary key field of a schema:
 
 If `type: "user"` is not set, TypeID uses an unprefixed value (`prefix: nil`). The configured `type` must be `nil`, `""`, or a valid TypeID prefix. Ecto validates the complete TypeID and requires a configured prefix to match exactly during casting, loading, and dumping. Ecto integration requires Ecto `~> 3.5`.
 
+### Use with Built-in JSON Encoding
+
+When the built-in `JSON` module is available, we can encode a `Typeid` struct as a JSON string:
+
+```elixir
+iex> {:ok, typeid} = Typeid.new("user")
+iex> JSON.encode!(typeid)
+"\"user_01hz6wxrw2ecmtwaqhnnpr275f\""
+```
+
 ### Use with Jason Encoding
 
-We can simply encode `Typeid` struct within `jason`.
+We can simply encode a `Typeid` struct with Jason.
 
 ```elixir
 iex> typeid
