@@ -3,6 +3,8 @@ defmodule Typeid.Ecto.Test do
 
   alias Ecto.TestRepo
 
+  @suffix "01hynkmr3genp92fjr9b74sqx4"
+
   defmodule Person1 do
     use Ecto.Schema
 
@@ -73,4 +75,47 @@ defmodule Typeid.Ecto.Test do
     assert %Person3{id: ^typeid_str, name: ^name, age: ^age} = TestRepo.get_by(Person3, id: typeid)
   end
 
+  test "validates TypeIDs and configured prefixes at Ecto boundaries" do
+    params = Typeid.init(type: "person_a")
+    bare_params = Typeid.init([])
+    value = "person_a_#{@suffix}"
+    collision = "person_ax_#{@suffix}"
+    invalid_suffix = "person_a_bad"
+    invalid_struct = %Typeid{prefix: "person_a", suffix: "bad"}
+    wrong_prefix_struct = %Typeid{prefix: "person_b", suffix: @suffix}
+
+    assert {:ok, ^value} = Typeid.cast(value, params)
+    assert {:ok, ^value} = Typeid.load(value, nil, params)
+    assert {:ok, ^value} = Typeid.dump(value, nil, params)
+    assert {:ok, ^value} = Typeid.cast(%Typeid{prefix: "person_a", suffix: @suffix}, params)
+
+    for invalid <- [collision, invalid_suffix, invalid_struct, wrong_prefix_struct] do
+      assert :error = Typeid.cast(invalid, params)
+      assert :error = Typeid.load(invalid, nil, params)
+      assert :error = Typeid.dump(invalid, nil, params)
+    end
+
+    assert {:ok, @suffix} = Typeid.cast(@suffix, bare_params)
+
+    for type <- [nil, ""], prefix <- [nil, ""] do
+      params = Typeid.init(type: type)
+      typeid = %Typeid{prefix: prefix, suffix: @suffix}
+
+      assert {:ok, @suffix} = Typeid.cast(typeid, params)
+      assert {:ok, @suffix} = Typeid.dump(typeid, nil, params)
+    end
+
+    assert :error = Typeid.dump(value, nil, bare_params)
+    assert :error = Typeid.dump(%Typeid{prefix: "person_a", suffix: @suffix}, nil, bare_params)
+  end
+
+  test "rejects invalid Ecto type options" do
+    assert %{type: "person_a"} = Typeid.init(type: "person_a")
+    assert %{type: nil} = Typeid.init([])
+    assert %{type: ""} = Typeid.init(type: "")
+
+    assert_raise ArgumentError, ~r/valid TypeID prefix/, fn ->
+      Typeid.init(type: "Person")
+    end
+  end
 end

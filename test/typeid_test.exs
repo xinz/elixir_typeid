@@ -62,6 +62,16 @@ defmodule TypeidTest do
     assert Typeid.parse("_00000000000000000000000000") == :error
   end
 
+  test "parses and validates a maximum-length prefix" do
+    prefix = String.duplicate("a", 63)
+    suffix = "01hynkmr3genp92fjr9b74sqx4"
+    value = "#{prefix}_#{suffix}"
+
+    assert {:ok, %Typeid{prefix: ^prefix, suffix: ^suffix}} = Typeid.parse(value)
+    assert Typeid.valid?(value)
+    refute Typeid.valid?("#{prefix}a_#{suffix}")
+  end
+
   test "check valid? with %Typeid{}" do
     assert Typeid.valid?(%Typeid{prefix: "user"}) == false
     assert Typeid.valid?(%Typeid{prefix: "user", suffix: "12345"}) == false
@@ -98,16 +108,17 @@ defmodule TypeidTest do
     {:ok, content} = Jason.encode(%{"id" => typeid})
     assert String.contains?(content, typeid_str) == true
 
-    {:ok, t1} = Typeid.new("device")
-    Process.sleep(100)
-    {:ok, t2} = Typeid.new("device")
-    Process.sleep(100)
-    {:ok, t3} = Typeid.new("device")
-    encoded = Jason.encode!(%{"devices" => [t1, t2, t3]})
-    %{"devices" => devices} = Jason.decode!(encoded)
-    input_order = ["#{t1}", "#{t2}", "#{t3}"]
-    assert devices == input_order
-    # Sorts items according to the generated time-ordered in ascending
-    assert Enum.sort(devices) == input_order
+    devices = [
+      %Typeid{prefix: "device", suffix: "00000000000000000000000001"},
+      %Typeid{prefix: "device", suffix: "0000000000000000000000000a"},
+      %Typeid{prefix: "device", suffix: "0000000000000000000000000g"}
+    ]
+
+    encoded = Jason.encode!(%{"devices" => devices})
+    %{"devices" => encoded_devices} = Jason.decode!(encoded)
+    input_order = Enum.map(devices, &Typeid.to_string/1)
+
+    assert encoded_devices == input_order
+    assert Enum.sort(encoded_devices) == input_order
   end
 end
