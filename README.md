@@ -12,6 +12,8 @@ Read more about TypeIDs in the [specification](https://github.com/jetify-com/typ
 
 ## Installation
 
+Requires Elixir 1.14 or later.
+
 ```elixir
 def deps do
   [
@@ -22,9 +24,11 @@ end
 
 ## Intro
 
-- The [test cases](https://github.com/jetify-com/typeid/tree/main/spec#validating-implementations) of the formal specification are 100% covered.
-- Implements `Ecto.ParameterizedType` can optionally integrate with Ecto schema.
-- Implements `Jason.Encoder` can optionally inegerate with `jason` encoding.
+- Covers the [formal TypeID specification test cases](https://github.com/jetify-com/typeid/tree/main/spec#validating-implementations).
+- Implements `Ecto.ParameterizedType` for optional Ecto schema integration.
+- Implements `Jason.Encoder` for optional Jason encoding.
+
+The Ecto and Jason extensions are generated when their optional dependencies are available while `elixir_typeid` is compiled. If either dependency is added later, recompile this library.
 
 ## Usage
 
@@ -73,7 +77,7 @@ or define `Typeid` type in a primary key field of a schema:
   end
 ```
 
-If the `type: "user"` in the above mentioned examples is not set, there will process the prefix of the Typeid as `nil`.
+If `type: "user"` is not set, TypeID uses an unprefixed value (`prefix: nil`). The configured `type` must be `nil`, `""`, or a valid TypeID prefix. Ecto validates the complete TypeID and requires a configured prefix to match exactly during casting, loading, and dumping. Ecto integration requires Ecto `~> 3.5`.
 
 ### Use with Jason Encoding
 
