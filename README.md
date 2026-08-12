@@ -17,7 +17,7 @@ Requires Elixir 1.14 or later.
 ```elixir
 def deps do
   [
-    {:elixir_typeid, "~> 0.2"}
+    {:elixir_typeid, "~> 0.3"}
   ]
 end
 ```
