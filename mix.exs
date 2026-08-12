@@ -27,7 +27,7 @@ defmodule Typeid.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:crockford_base32, "~> 0.8"},
+      {:crockford_base32, "~> 0.9"},
       {:uniq, "~> 0.6"},
       {:ecto, "~> 3.5", optional: true},
       {:jason, "~> 1.3", optional: true},
